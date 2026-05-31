@@ -1,0 +1,287 @@
+<script lang="ts">
+	import { enhance } from '$app/forms';
+	import { HugeiconsIcon } from '@hugeicons/svelte';
+	import { Attachment01Icon } from '@hugeicons/core-free-icons';
+	import ButtonUi from '../../ui/button.svelte';
+	import Label from '../../ui/label.svelte';
+	import {
+		FORUM_ATTACHMENT_ACCEPT,
+		FORUM_ATTACHMENT_MAX_BYTES,
+		FORUM_ATTACHMENT_MAX_PER_POST,
+		formatAttachmentSize,
+		isImageMimeType
+	} from '$lib/shared/forum-attachments';
+
+	type Props = {
+		parentId?: string | null;
+		placeholder?: string;
+		submitLabel?: string;
+		startOpen?: boolean;
+		variant?: 'inline' | 'thread';
+		onSent?: () => void;
+	};
+
+	let {
+		parentId = null,
+		placeholder = 'Write a reply…',
+		submitLabel = 'Reply',
+		startOpen = false,
+		variant = 'inline',
+		onSent
+	}: Props = $props();
+
+	let body = $state('');
+	let open = $state(false);
+	let pendingAttachments = $state<{ id: string; file: File; previewUrl: string | null }[]>([]);
+	let fileInput = $state<HTMLInputElement | null>(null);
+	let error = $state('');
+
+	const canSend = $derived(body.trim().length > 0 || pendingAttachments.length > 0);
+	const showForm = $derived(open || startOpen || parentId == null);
+	const isThreadFooter = $derived(variant === 'thread');
+
+	const fieldShellClass =
+		'overflow-hidden rounded-lg border border-border bg-surface-raised focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/20';
+	const textareaClass =
+		'block w-full resize-none border-0 bg-transparent px-3.5 py-2.5 text-sm leading-relaxed text-ink placeholder:text-stone-400 focus:outline-none';
+	const allowedMimeTypes = new Set(FORUM_ATTACHMENT_ACCEPT.split(',').map((t) => t.trim()));
+	const imageExtByMime: Record<string, string> = {
+		'image/jpeg': '.jpg',
+		'image/png': '.png',
+		'image/gif': '.gif',
+		'image/webp': '.webp'
+	};
+
+	function toPending(file: File) {
+		return {
+			id: crypto.randomUUID(),
+			file,
+			previewUrl: isImageMimeType(file.type) ? URL.createObjectURL(file) : null
+		};
+	}
+
+	function pickFiles() {
+		error = '';
+		fileInput?.click();
+	}
+
+	function addFiles(selected: File[]) {
+		if (selected.length === 0) return;
+
+		error = '';
+		const incoming = selected.map(toPending);
+		const combined = [...pendingAttachments, ...incoming];
+
+		function abortIncoming() {
+			for (const item of incoming) {
+				if (item.previewUrl) {
+					URL.revokeObjectURL(item.previewUrl);
+				}
+			}
+		}
+
+		if (combined.length > FORUM_ATTACHMENT_MAX_PER_POST) {
+			error = `At most ${FORUM_ATTACHMENT_MAX_PER_POST} files per post`;
+			abortIncoming();
+			return;
+		}
+
+		for (const { file } of incoming) {
+			if (!allowedMimeTypes.has(file.type)) {
+				error = 'File type not allowed. Use JPEG, PNG, GIF, WebP, PDF, or plain text.';
+				abortIncoming();
+				return;
+			}
+			if (file.size > FORUM_ATTACHMENT_MAX_BYTES) {
+				error = 'Each file must be 5 MB or smaller';
+				abortIncoming();
+				return;
+			}
+		}
+
+		pendingAttachments = combined;
+	}
+
+	function onFilesSelected(e: Event) {
+		const input = e.currentTarget as HTMLInputElement;
+		const selected = [...(input.files ?? [])];
+		input.value = '';
+		addFiles(selected);
+	}
+
+	function fileFromClipboardItem(item: DataTransferItem): File | null {
+		if (item.kind !== 'file' || !isImageMimeType(item.type)) return null;
+		const file = item.getAsFile();
+		if (!file) return null;
+
+		const mime = file.type || item.type;
+		if (!allowedMimeTypes.has(mime)) return null;
+
+		if (file.name) return file;
+
+		const ext = imageExtByMime[mime] ?? '.png';
+		return new File([file], `pasted-image-${Date.now()}${ext}`, { type: mime });
+	}
+
+	function onPaste(e: ClipboardEvent) {
+		const items = e.clipboardData?.items;
+		if (!items) return;
+
+		const images: File[] = [];
+		for (const item of items) {
+			const file = fileFromClipboardItem(item);
+			if (file) images.push(file);
+		}
+
+		if (images.length === 0) return;
+
+		e.preventDefault();
+		addFiles(images);
+	}
+
+	function removeAttachment(id: string) {
+		const item = pendingAttachments.find((attachment) => attachment.id === id);
+		if (item?.previewUrl) {
+			URL.revokeObjectURL(item.previewUrl);
+		}
+		pendingAttachments = pendingAttachments.filter((attachment) => attachment.id !== id);
+		error = '';
+	}
+
+	function clearPending() {
+		for (const item of pendingAttachments) {
+			if (item.previewUrl) {
+				URL.revokeObjectURL(item.previewUrl);
+			}
+		}
+		pendingAttachments = [];
+		error = '';
+	}
+</script>
+
+{#if parentId != null && !showForm}
+	<button
+		type="button"
+		class="text-xs font-medium text-accent hover:underline"
+		onclick={() => {
+			open = true;
+		}}
+	>
+		Reply
+	</button>
+{:else}
+	<form
+		method="POST"
+		action="?/createPost"
+		enctype="multipart/form-data"
+		use:enhance={({ formData }) => {
+			formData.delete('attachments');
+			for (const { file } of pendingAttachments) {
+				formData.append('attachments', file);
+			}
+
+			return async ({ update, formElement }) => {
+				await update();
+				formElement.reset();
+				body = '';
+				clearPending();
+				if (parentId != null) {
+					open = false;
+				}
+				onSent?.();
+			};
+		}}
+		class={parentId != null && !isThreadFooter ? 'mt-1.5' : ''}
+	>
+		{#if parentId}
+			<input type="hidden" name="parentId" value={parentId} />
+		{/if}
+
+		<div class={fieldShellClass}>
+			{#if pendingAttachments.length > 0}
+				<ul class="flex flex-wrap gap-2 border-b border-border px-3 py-2">
+					{#each pendingAttachments as item (item.id)}
+						<li
+							class="flex max-w-full items-center gap-2 rounded-md border border-border bg-surface px-2 py-1.5 text-xs"
+						>
+							{#if item.previewUrl}
+								<img src={item.previewUrl} alt="" class="size-8 shrink-0 rounded object-cover" />
+							{/if}
+							<span class="min-w-0 truncate text-ink" title={item.file.name}>{item.file.name}</span>
+							<span class="shrink-0 text-ink-muted">{formatAttachmentSize(item.file.size)}</span>
+							<button
+								type="button"
+								class="shrink-0 text-ink-muted hover:text-ink"
+								aria-label="Remove {item.file.name}"
+								onclick={() => removeAttachment(item.id)}
+							>
+								×
+							</button>
+						</li>
+					{/each}
+				</ul>
+			{/if}
+			<Label for="post-body-{parentId ?? 'root'}" class="sr-only">Reply</Label>
+			<textarea
+				id="post-body-{parentId ?? 'root'}"
+				name="body"
+				rows={isThreadFooter ? 4 : 2}
+				required
+				bind:value={body}
+				{placeholder}
+				class={textareaClass}
+				onpaste={onPaste}
+			></textarea>
+		</div>
+
+		<input
+			bind:this={fileInput}
+			type="file"
+			accept={FORUM_ATTACHMENT_ACCEPT}
+			multiple
+			class="sr-only"
+			onchange={onFilesSelected}
+		/>
+
+		{#if error}
+			<p class="mt-2 text-xs text-red-600" role="alert">{error}</p>
+		{/if}
+
+		<div class="mt-2 flex items-center justify-end gap-2">
+			{#if parentId && !isThreadFooter}
+				<ButtonUi
+					type="button"
+					variant="ghost"
+					class="h-9 px-3"
+					onclick={() => {
+						clearPending();
+						body = '';
+						open = false;
+					}}
+				>
+					Cancel
+				</ButtonUi>
+			{/if}
+			<ButtonUi
+				type="button"
+				variant="secondary"
+				class="h-9 w-9 shrink-0 p-0 px-0"
+				onclick={pickFiles}
+				aria-label="Attach files"
+				title="Attach files"
+			>
+				<HugeiconsIcon
+					icon={Attachment01Icon}
+					size={18}
+					color="currentColor"
+					strokeWidth={2}
+					class="shrink-0"
+					aria-hidden={true}
+				/>
+			</ButtonUi>
+			<ButtonUi type="submit" disabled={!canSend} class="h-9">
+				{submitLabel}
+			</ButtonUi>
+		</div>
+	</form>
+{/if}
