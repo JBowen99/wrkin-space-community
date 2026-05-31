@@ -1,0 +1,9 @@
+# wrkin.space community edition robots.txt
+User-agent: *
+Allow: /
+Disallow: /teams
+Disallow: /settings
+Disallow: /invite
+Disallow: /projects
+Disallow: /api/
+Disallow: /logout
