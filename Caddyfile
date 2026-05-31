@@ -1,0 +1,16 @@
+{$DOMAIN} {
+	encode zstd gzip
+
+	log {
+		output stdout
+		format json
+	}
+
+	@health path /api/health /api/health/*
+	log_skip @health
+
+	@collab path /collab /collab/*
+	reverse_proxy @collab collab:1234
+
+	reverse_proxy app:3000
+}
