@@ -1,0 +1,98 @@
+@source "../**/*.{svelte,ts}";
+@source "../shared/**/*.{svelte,ts}";
+
+@theme {
+	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+	--font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
+
+	--color-ink: #1f2937;
+	--color-ink-muted: #6b7280;
+	--color-surface: #fafafa;
+	--color-surface-raised: #ffffff;
+	--color-border: #e5e7eb;
+	--color-accent: #e11d48;
+	--color-accent-hover: #be123c;
+	--color-accent-muted: #ffe4e6;
+}
+
+@layer base {
+	body {
+		@apply bg-surface font-sans text-ink antialiased;
+	}
+}
+
+@layer utilities {
+	.scrollbar-hidden {
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+	}
+
+	.scrollbar-hidden::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+.ec-wrkin .ec {
+	--ec-border-color: var(--color-border);
+	--ec-button-border-color: var(--color-border);
+	--ec-button-bg-color: var(--color-surface-raised);
+	--ec-button-text-color: var(--color-ink);
+	--ec-button-active-bg-color: var(--color-accent-muted);
+	--ec-button-active-text-color: var(--color-accent);
+	--ec-today-bg-color: color-mix(in srgb, var(--color-accent-muted) 60%, transparent);
+	gap: 1rem;
+	height: 100%;
+	min-height: 32rem;
+	font-family: var(--font-sans);
+	color: var(--color-ink);
+	background: transparent;
+}
+
+.ec-wrkin .ec-toolbar {
+	display: none;
+}
+
+.ec-wrkin .ec-main {
+	flex: 1;
+	min-height: 0;
+	border: 1px solid var(--color-border);
+	border-radius: 0.75rem;
+	overflow: hidden;
+}
+
+.ec-wrkin .ec-event {
+	border-radius: 0.375rem;
+	background: var(--color-accent);
+	border-color: var(--color-accent-hover);
+	color: white;
+}
+
+.ec-wrkin .ec-day-grid .ec-event {
+	margin-inline: var(--ec-event-col-gap);
+	inline-size: calc(100% - 2 * var(--ec-event-col-gap));
+}
+
+.ec-wrkin .ec-now-indicator {
+	background: var(--color-accent);
+}
+
+.ec-wrkin .ec-day-grid.ec-month-view .ec-main {
+	align-content: start;
+}
+
+.ec-wrkin .ec-day-grid.ec-month-view .ec-day {
+	aspect-ratio: 1;
+	min-block-size: 0;
+}
+
+.ec-wrkin .ec-time-grid .ec-event {
+	overflow: hidden;
+}
+
+.ec-wrkin .ec-time-grid .ec-event .ec-event-body {
+	justify-content: flex-start;
+}
+
+.ec-wrkin .ec-time-grid .ec-event .ec-event-title {
+	position: static;
+}
