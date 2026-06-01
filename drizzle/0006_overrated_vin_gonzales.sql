@@ -1,0 +1,1 @@
+ALTER TABLE "forum_thread" ADD COLUMN "closed_at" timestamp;

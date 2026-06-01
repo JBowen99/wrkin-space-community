@@ -1,0 +1,13 @@
+{
+	"//": "Runtime tsconfig for tsx-executed services (collab, migrate) in the Docker image. The collab server runs src/lib/server/*.ts directly via tsx, and those files import from `$lib/*` (the SvelteKit alias). Unlike the app service — which Vite bundles — tsx needs an explicit path mapping to resolve `$lib` at runtime.",
+	"compilerOptions": {
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"target": "esnext",
+		"baseUrl": ".",
+		"paths": {
+			"$lib": ["./src/lib"],
+			"$lib/*": ["./src/lib/*"]
+		}
+	}
+}
