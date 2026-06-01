@@ -1,0 +1,121 @@
+# Self-hosted compose stack (works with `docker compose` and `podman compose`).
+#
+# First create a .env (the `env_file: .env` entries below require it):
+#   cp .env.example .env
+#   echo "BETTER_AUTH_SECRET=$(openssl rand -hex 32)" >> .env
+#
+# Then run everything with one command:
+#   docker compose up -d --build      # or: podman compose up -d --build
+#
+# App available at http://localhost:3000
+
+name: wrkin-community
+
+x-app-env: &app-env
+  NODE_ENV: production
+  HOST: 0.0.0.0
+  ORIGIN: ${ORIGIN:-http://localhost:3000}
+  DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-wrkin}
+  BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+  COLLAB_JWT_SECRET: ${COLLAB_JWT_SECRET:-${BETTER_AUTH_SECRET}}
+  PUBLIC_COLLAB_WS_URL: ${PUBLIC_COLLAB_WS_URL:-ws://localhost:3000/collab}
+  HOCUSPOCUS_PORT: 1234
+  COLLAB_HEALTH_PORT: 1235
+  S3_ENDPOINT: http://minio:9000
+  S3_REGION: ${S3_REGION:-us-east-1}
+  S3_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+  S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+  S3_BUCKET: ${S3_BUCKET:-wrkin}
+  S3_FORCE_PATH_STYLE: 'true'
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-wrkin}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-wrkin}']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    command: server /data --console-address ":9001"
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:9000/minio/health/live']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  minio-init:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin} &&
+      mc mb --ignore-existing local/${S3_BUCKET:-wrkin}
+      "
+    restart: 'no'
+
+  migrate:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      <<: *app-env
+    command: ['node', '--import=tsx', 'scripts/migrate.ts']
+    restart: 'no'
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+      migrate:
+        condition: service_completed_successfully
+    env_file: .env
+    environment:
+      <<: *app-env
+      PORT: 3000
+    ports:
+      - '3000:3000'
+
+  collab:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    env_file: .env
+    environment:
+      <<: *app-env
+    command: ['node', '--import=tsx', 'collab/server.ts']
+    ports:
+      - '1234:1234'
+
+volumes:
+  pgdata:
+  miniodata:
