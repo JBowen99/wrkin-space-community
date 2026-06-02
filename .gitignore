@@ -1,0 +1,34 @@
+node_modules
+.pnpm-store
+
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.production.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Backups (created by the backup container; never commit dumps)
+/backups
+
+# Local file uploads (pre-MinIO leftovers and dev artifacts)
+/data
+
+# Sync temp directory
+/.tmp
