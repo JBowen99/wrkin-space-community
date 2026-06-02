@@ -1,0 +1,5 @@
+onlyBuiltDependencies:
+  - esbuild
+  - '@tailwindcss/oxide'
+  - '@hugeicons/svelte'
+  - better-sqlite3
