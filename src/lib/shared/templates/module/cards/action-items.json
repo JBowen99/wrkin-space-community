@@ -1,0 +1,32 @@
+{
+	"id": "action-items",
+	"moduleType": "cards",
+	"name": "Action items",
+	"description": "Track owners, due dates, and status for follow-ups.",
+	"headline": "Assign work and see status on the board face.",
+	"sortOrder": 30,
+	"includesSampleContent": false,
+	"schema": {
+		"fields": [
+			{ "key": "title", "label": "Title", "type": "short_text", "required": true },
+			{ "key": "owner", "label": "Owner", "type": "short_text", "required": false },
+			{ "key": "due", "label": "Due date", "type": "date", "required": false },
+			{
+				"key": "status",
+				"label": "Status",
+				"type": "select",
+				"required": false,
+				"options": ["Open", "In progress", "Done"]
+			}
+		]
+	},
+	"layout": {
+		"primaryFieldKey": "title",
+		"faceFieldKeys": ["title", "owner", "status"]
+	},
+	"columns": [
+		{ "title": "Open", "color": "#64748b", "position": 0, "cards": [] },
+		{ "title": "In progress", "color": "#3b82f6", "position": 1, "cards": [] },
+		{ "title": "Done", "color": "#22c55e", "position": 2, "cards": [] }
+	]
+}

@@ -1,0 +1,8 @@
+{
+	"id": "blank",
+	"kind": "preset",
+	"name": "Blank wrkspace",
+	"description": "Start with no modules — add tools as you go.",
+	"includesSampleContent": false,
+	"modules": []
+}

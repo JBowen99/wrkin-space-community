@@ -1,0 +1,7 @@
+{
+	"id": "timeline",
+	"moduleType": "reports",
+	"reportType": "timeline",
+	"name": "Timeline",
+	"description": "Cross-module schedule with tasks and calendar events."
+}

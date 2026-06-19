@@ -1,0 +1,12 @@
+{
+	"id": "essentials",
+	"kind": "preset",
+	"name": "Essentials",
+	"description": "Chat, tasks, and docs for day-to-day team work.",
+	"includesSampleContent": false,
+	"modules": [
+		{ "key": "chat", "type": "chat", "title": "Chat", "position": 0 },
+		{ "key": "tasks", "type": "tasks", "title": "Tasks", "position": 1 },
+		{ "key": "docs", "type": "docs", "title": "Docs", "position": 2 }
+	]
+}

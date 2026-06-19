@@ -1,0 +1,12 @@
+{
+	"id": "team-hub",
+	"kind": "preset",
+	"name": "Team hub",
+	"description": "Chat, forum, and docs for async collaboration and knowledge sharing.",
+	"includesSampleContent": false,
+	"modules": [
+		{ "key": "chat", "type": "chat", "title": "Chat", "position": 0 },
+		{ "key": "forum", "type": "forum", "title": "Forum", "position": 1 },
+		{ "key": "docs", "type": "docs", "title": "Docs", "position": 2 }
+	]
+}

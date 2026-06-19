@@ -1,0 +1,7 @@
+{
+	"id": "workload",
+	"moduleType": "reports",
+	"reportType": "workload",
+	"name": "Workload",
+	"description": "Open and overdue work by assignee across task modules."
+}

@@ -1,0 +1,7 @@
+{
+	"id": "personal",
+	"moduleType": "reports",
+	"reportType": "personal",
+	"name": "Personal",
+	"description": "One person's completed work and contributions in a period."
+}

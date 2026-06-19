@@ -1,0 +1,7 @@
+{
+	"id": "activity-digest",
+	"moduleType": "reports",
+	"reportType": "activity_digest",
+	"name": "Activity digest",
+	"description": "Structured what changed recap for a date range."
+}
