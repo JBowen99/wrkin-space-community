@@ -1,0 +1,10 @@
+{
+	"id": "empty",
+	"moduleType": "cards",
+	"name": "Blank board",
+	"description": "Define columns and card fields yourself — nothing is preconfigured.",
+	"headline": "Start with an empty canvas.",
+	"sortOrder": 90,
+	"includesSampleContent": false,
+	"columns": []
+}

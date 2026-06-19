@@ -1,0 +1,90 @@
+{
+	"id": "bug-triage",
+	"moduleType": "cards",
+	"name": "Bug triage",
+	"description": "New, investigating, and fixed — with severity, reporter, and dates.",
+	"headline": "Prioritize bugs with severity and ownership.",
+	"sortOrder": 50,
+	"includesSampleContent": true,
+	"schema": {
+		"fields": [
+			{ "key": "title", "label": "Title", "type": "short_text", "required": true },
+			{
+				"key": "severity",
+				"label": "Severity",
+				"type": "select",
+				"required": true,
+				"options": ["Critical", "High", "Medium", "Low"]
+			},
+			{ "key": "reporter", "label": "Reporter", "type": "short_text", "required": false },
+			{ "key": "found_date", "label": "Bug found date", "type": "date", "required": false },
+			{ "key": "fixed_date", "label": "Bug fixed date", "type": "date", "required": false },
+			{ "key": "notes", "label": "Notes", "type": "long_text", "required": false }
+		]
+	},
+	"layout": {
+		"primaryFieldKey": "title",
+		"faceFieldKeys": ["title", "severity"]
+	},
+	"columns": [
+		{
+			"title": "New",
+			"color": "#ef4444",
+			"position": 0,
+			"cards": [
+				{
+					"position": 0,
+					"fields": {
+						"title": "Login redirect loop on Safari",
+						"severity": "High",
+						"reporter": "Alex",
+						"found_date": "2026-05-28"
+					}
+				},
+				{
+					"position": 1,
+					"fields": {
+						"title": "Avatar upload fails over 2MB",
+						"severity": "Medium",
+						"reporter": "Jordan",
+						"found_date": "2026-06-01"
+					}
+				}
+			]
+		},
+		{
+			"title": "Investigating",
+			"color": "#f59e0b",
+			"position": 1,
+			"cards": [
+				{
+					"position": 0,
+					"fields": {
+						"title": "Stale cache after module reorder",
+						"severity": "Critical",
+						"reporter": "Sam",
+						"found_date": "2026-05-20",
+						"notes": "Reproduces after drag-and-drop on dashboard."
+					}
+				}
+			]
+		},
+		{
+			"title": "Fixed",
+			"color": "#22c55e",
+			"position": 2,
+			"cards": [
+				{
+					"position": 0,
+					"fields": {
+						"title": "Broken dark mode toggle on settings page",
+						"severity": "Low",
+						"reporter": "Taylor",
+						"found_date": "2026-05-15",
+						"fixed_date": "2026-05-22"
+					}
+				}
+			]
+		}
+	]
+}

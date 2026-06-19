@@ -1,0 +1,36 @@
+{
+	"id": "kanban-backlog-review",
+	"moduleType": "cards",
+	"name": "Backlog + review",
+	"description": "Backlog, in progress, review, and done — with a few starter cards.",
+	"headline": "A delivery flow with a review step.",
+	"sortOrder": 40,
+	"includesSampleContent": true,
+	"columns": [
+		{
+			"title": "Backlog",
+			"color": "#64748b",
+			"position": 0,
+			"cards": [
+				{
+					"title": "Scope launch checklist",
+					"body": "List must-haves before release.",
+					"position": 0
+				},
+				{
+					"title": "Document API changes",
+					"body": "Note breaking changes for integrators.",
+					"position": 1
+				}
+			]
+		},
+		{
+			"title": "In progress",
+			"color": "#3b82f6",
+			"position": 1,
+			"cards": [{ "title": "Polish onboarding", "body": "Shorten first-run path.", "position": 0 }]
+		},
+		{ "title": "Review", "color": "#a855f7", "position": 2, "cards": [] },
+		{ "title": "Done", "color": "#22c55e", "position": 3, "cards": [] }
+	]
+}

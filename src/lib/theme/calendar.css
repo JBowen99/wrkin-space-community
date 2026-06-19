@@ -1,0 +1,194 @@
+/**
+ * Event Calendar (@event-calendar/core / vkurko/calendar) theming via CSS variables.
+ * Maps --ec-* tokens to wrkin semantic colors so light/dark and palette switches apply automatically.
+ * @see https://github.com/vkurko/calendar — Theming section
+ * @see packages/core/src/styles/theme.css in @event-calendar/core
+ */
+
+.ec-wrkin.ec-custom-scrollbars .ec-main {
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-border) transparent;
+}
+
+.ec-wrkin .ec {
+	color-scheme: light;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	height: 100%;
+
+	/* Calendar grayscale scale → semantic surfaces */
+	--ec-color-50: var(--color-surface);
+	--ec-color-100: var(--color-surface-muted);
+	--ec-color-200: var(--color-surface-inset);
+	--ec-color-300: var(--color-border);
+	--ec-color-400: var(--color-ink-muted);
+
+	/* Main */
+	--ec-bg-color: var(--color-surface-raised);
+	--ec-text-color: var(--color-ink);
+	--ec-border-color: var(--color-border);
+
+	/* Toolbar buttons (hidden in wrkin; mapped for popups / future use) */
+	--ec-button-bg-color: var(--color-surface-raised);
+	--ec-button-border-color: var(--color-border);
+	--ec-button-text-color: var(--color-ink);
+	--ec-button-active-bg-color: var(--color-surface-hover);
+	--ec-button-active-border-color: var(--color-border);
+	--ec-button-active-text-color: var(--color-ink);
+
+	/* Days */
+	--ec-today-bg-color: color-mix(
+		in srgb,
+		var(--color-accent-muted) 55%,
+		var(--color-surface-raised)
+	);
+	--ec-highlight-color: var(--color-surface-hover);
+
+	/* Events */
+	--ec-event-bg-color: var(--color-accent);
+	--ec-event-text-color: #fff;
+	--ec-bg-event-color: var(--color-surface-muted);
+	--ec-bg-event-opacity: 0.4;
+
+	/* Now indicator */
+	--ec-now-indicator-color: var(--color-accent);
+
+	/* Popovers / overflow popup */
+	--ec-popup-bg-color: var(--color-surface-raised);
+
+	gap: 1rem;
+	max-height: 100%;
+	min-height: 32rem;
+	font-family: var(--font-sans);
+	color: var(--color-ink);
+	background: transparent;
+}
+
+html[data-appearance='dark'] .ec-wrkin .ec {
+	color-scheme: dark;
+	--ec-bg-event-opacity: 0.55;
+	--ec-today-bg-color: color-mix(
+		in srgb,
+		var(--color-accent-muted) 40%,
+		var(--color-surface-raised)
+	);
+}
+
+.ec-wrkin .ec-toolbar {
+	display: none;
+}
+
+.ec-wrkin .ec-main {
+	flex: 1;
+	min-height: 0;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-surface);
+	overflow: auto;
+	background-color: var(--color-surface-raised);
+}
+
+.ec-wrkin .ec-col-head,
+.ec-wrkin .ec-col-group {
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: var(--color-ink-muted);
+}
+
+.ec-wrkin .ec-day-head time {
+	font-size: 0.8125rem;
+	color: var(--color-ink);
+}
+
+.ec-wrkin .ec-day.ec-other-month .ec-day-head time {
+	color: var(--color-ink-muted);
+}
+
+.ec-wrkin .ec-day-foot a {
+	color: var(--color-accent);
+	font-weight: 500;
+}
+
+.ec-wrkin .ec-day-foot a:hover {
+	color: var(--color-accent-hover);
+}
+
+.ec-wrkin .ec-event {
+	border-radius: var(--radius-control);
+	border: 1px solid color-mix(in srgb, var(--color-accent-hover) 80%, transparent);
+	background-color: var(--ec-event-bg-color);
+	color: var(--ec-event-text-color);
+	box-shadow: none;
+}
+
+.ec-wrkin .ec-day-grid .ec-event {
+	margin-inline: var(--ec-event-col-gap);
+	inline-size: calc(100% - 2 * var(--ec-event-col-gap));
+}
+
+.ec-wrkin .ec-list .ec-event {
+	color: var(--color-ink);
+	background-color: var(--ec-day-bg-color);
+	border-block-end: 1px solid var(--color-border);
+}
+
+.ec-wrkin .ec-list .ec-event:hover {
+	background-color: var(--color-surface-hover);
+}
+
+.ec-wrkin .ec-list .ec-event .ec-event-title {
+	color: var(--color-ink);
+	font-weight: 500;
+}
+
+.ec-wrkin .ec-list .ec-event .ec-event-time {
+	color: var(--color-ink-muted);
+}
+
+.ec-wrkin .ec-no-events {
+	color: var(--color-ink-muted);
+	background-color: var(--color-surface-raised);
+}
+
+.ec-wrkin .ec-popup {
+	border-radius: var(--radius-control);
+	box-shadow:
+		0 10px 15px -3px color-mix(in srgb, var(--color-ink) 12%, transparent),
+		0 4px 6px -4px color-mix(in srgb, var(--color-ink) 8%, transparent);
+}
+
+.ec-wrkin .ec-day-grid.ec-month-view .ec-main {
+	align-content: start;
+}
+
+.ec-wrkin .ec-day-grid.ec-month-view .ec-day {
+	aspect-ratio: 3 / 2;
+	min-block-size: 0;
+}
+
+.ec-wrkin .ec-day.ec-sat,
+.ec-wrkin .ec-day.ec-sun {
+	background-color: var(--color-surface-muted);
+}
+
+.ec-wrkin .ec-col-head.ec-sat,
+.ec-wrkin .ec-col-head.ec-sun {
+	color: var(--color-ink-muted);
+}
+
+.ec-wrkin .ec-time-grid .ec-event {
+	overflow: hidden;
+}
+
+.ec-wrkin .ec-time-grid .ec-event .ec-event-body {
+	justify-content: flex-start;
+}
+
+.ec-wrkin .ec-time-grid .ec-event .ec-event-title {
+	position: static;
+	color: inherit;
+}
+
+.ec-wrkin .ec-time-grid .ec-event .ec-event-time {
+	color: color-mix(in srgb, var(--ec-event-text-color) 85%, transparent);
+}

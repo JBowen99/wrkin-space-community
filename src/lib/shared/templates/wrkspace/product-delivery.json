@@ -1,0 +1,56 @@
+{
+	"id": "product-delivery",
+	"kind": "full",
+	"name": "Product delivery",
+	"description": "Tasks, calendar, decisions, and a kanban board with starter cards.",
+	"includesSampleContent": true,
+	"modules": [
+		{
+			"key": "tasks",
+			"type": "tasks",
+			"title": "Tasks",
+			"position": 0,
+			"content": {
+				"tasks": [
+					{
+						"title": "Define launch scope",
+						"description": "Agree on must-haves for the first release.",
+						"status": "todo",
+						"priority": "high",
+						"position": 0
+					},
+					{
+						"title": "Review open decisions",
+						"description": "Close or defer items blocking delivery.",
+						"status": "in_progress",
+						"priority": "medium",
+						"position": 1
+					},
+					{
+						"title": "Schedule milestone check-in",
+						"description": "Book a calendar slot with stakeholders.",
+						"status": "backlog",
+						"priority": "low",
+						"position": 2
+					}
+				]
+			}
+		},
+		{ "key": "calendar", "type": "calendar", "title": "Calendar", "position": 1 },
+		{ "key": "decisions", "type": "decisions", "title": "Decisions", "position": 2 },
+		{
+			"key": "cards",
+			"type": "cards",
+			"title": "Board",
+			"position": 3,
+			"moduleTemplateId": "kanban-backlog-review"
+		},
+		{
+			"key": "reports",
+			"type": "reports",
+			"title": "Delivery progress",
+			"position": 4,
+			"moduleTemplateId": "progress"
+		}
+	]
+}

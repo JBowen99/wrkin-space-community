@@ -1,0 +1,7 @@
+{
+	"id": "progress",
+	"moduleType": "reports",
+	"reportType": "progress",
+	"name": "Progress",
+	"description": "Roll up completion across linked task modules."
+}

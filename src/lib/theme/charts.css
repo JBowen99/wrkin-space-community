@@ -1,0 +1,30 @@
+/**
+ * LayerChart report styling — series colors map to semantic tokens.
+ * Chart mounts use `.wrkin-report-chart` for scoped tooltip/axis theming.
+ */
+
+.wrkin-report-chart {
+	--lc-tooltip-background: var(--color-surface-raised);
+	--lc-tooltip-foreground: var(--color-ink);
+	--lc-tooltip-border: var(--color-border);
+	color: var(--color-ink);
+}
+
+.wrkin-report-chart .lc-axis-tick text,
+.wrkin-report-chart .lc-axis-label {
+	fill: var(--color-ink-muted);
+}
+
+.wrkin-report-chart .lc-grid-line {
+	stroke: var(--color-border);
+	opacity: 0.6;
+}
+
+.wrkin-report-chart .lc-rule-line {
+	stroke: var(--color-border);
+}
+
+.wrkin-report-chart .lc-legend {
+	color: var(--color-ink-muted);
+	font-size: 0.75rem;
+}

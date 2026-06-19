@@ -1,0 +1,7 @@
+{
+	"id": "summary",
+	"moduleType": "reports",
+	"reportType": "summary",
+	"name": "Summary",
+	"description": "One-page stakeholder snapshot across linked modules."
+}

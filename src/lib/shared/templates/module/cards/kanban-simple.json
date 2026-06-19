@@ -1,0 +1,14 @@
+{
+	"id": "kanban-simple",
+	"moduleType": "cards",
+	"name": "Simple Task Tracker",
+	"description": "Lightweight board for everyday tasks and small teams.",
+	"headline": "Track tasks from open to complete.",
+	"sortOrder": 10,
+	"includesSampleContent": false,
+	"columns": [
+		{ "title": "To do", "color": "#64748b", "position": 0, "cards": [] },
+		{ "title": "Doing", "color": "#3b82f6", "position": 1, "cards": [] },
+		{ "title": "Done", "color": "#22c55e", "position": 2, "cards": [] }
+	]
+}
